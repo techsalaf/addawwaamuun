@@ -52,3 +52,7 @@ installer/database.sql
 *.zip
 .zip
 
+
+# Ignore deployment logs
+deploy/deploy.log
+
