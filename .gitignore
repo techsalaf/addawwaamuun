@@ -1,0 +1,54 @@
+# Laravel & Composer
+vendor/
+node_modules/
+npm-debug.log*
+yarn-error.log*
+composer.lock
+package-lock.json
+.env
+.env.*
+!.env.example
+
+# Laravel 8 specific
+/public/storage
+/storage/*.key
+/storage/app/public
+/public/hot
+/public/build
+
+# Laravel IDE & Test files
+.phpunit.result.cache
+.phpactor.json
+Homestead.yaml
+Homestead.json
+/.vagrant
+auth.json
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+*.sublime-workspace
+*.sublime-project
+
+# Backup & Misc
+.env.backup
+.env.production
+
+# Ignore storage except for .gitignore
+/storage/*
+!/storage/.gitignore
+
+# Ignore installer folder
+installer/
+
+# Ignore bootstrap/cache except for .gitignore
+/bootstrap/cache/*
+!/bootstrap/cache/.gitignore
+core/vendor/
+installer/database.sql
+
+
+# Ignore zip archives
+*.zip
+.zip
+

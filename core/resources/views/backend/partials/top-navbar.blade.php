@@ -1,0 +1,116 @@
+<div class="main-header">
+  <!-- Logo Header Start -->
+  <div class="logo-header" data-background-color="{{ $settings->admin_theme_version == 'light' ? 'white' : 'dark2' }}">
+    @if (!empty($websiteInfo->logo))
+      <a href="{{ route('index') }}" class="logo" target="_blank">
+        <img src="{{ asset('assets/img/' . $websiteInfo->logo) }}" alt="logo" class="navbar-brand" width="120">
+      </a>
+    @endif
+    
+    <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon">
+        <i class="icon-menu"></i>
+      </span>
+    </button>
+    <button class="topbar-toggler more"><i class="icon-options-vertical"></i></button>
+
+    <div class="nav-toggle">
+      <button class="btn btn-toggle toggle-sidebar">
+        <i class="icon-menu"></i>
+      </button>
+    </div>
+  </div>
+  <!-- Logo Header End -->
+
+  <!-- Navbar Header Start -->
+  <nav class="navbar navbar-header navbar-expand-lg" data-background-color="{{ $settings->admin_theme_version == 'light' ? 'white2' : 'dark' }}">
+    <div class="container-fluid">
+      <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
+        <!-- Website Navigation Icon -->
+        <li class="nav-item">
+          <a href="{{ route('index') }}" target="_blank" class="nav-link" title="{{ __('Visit Website') }}" data-toggle="tooltip" data-placement="bottom">
+            <i class="fas fa-external-link-alt"></i>
+            <span class="ml-1 d-none d-md-inline">{{ __('Website') }}</span>
+          </a>
+        </li>
+
+        <form action="{{ route('admin.change_theme') }}" class="form-inline mr-3" method="POST">
+          
+          @csrf
+          <div class="form-group">
+            <div class="selectgroup selectgroup-secondary selectgroup-pills">
+              <label class="selectgroup-item">
+                <input type="radio" name="admin_theme_version" value="light" class="selectgroup-input" {{ $settings->admin_theme_version == 'light' ? 'checked' : '' }} onchange="this.form.submit()">
+                <span class="selectgroup-button selectgroup-button-icon"><i class="fa fa-sun"></i></span>
+              </label>
+
+              <label class="selectgroup-item">
+                <input type="radio" name="admin_theme_version" value="dark" class="selectgroup-input" {{ $settings->admin_theme_version == 'dark' ? 'checked' : '' }} onchange="this.form.submit()">
+                <span class="selectgroup-button selectgroup-button-icon"><i class="fa fa-moon"></i></span>
+              </label>
+            </div>
+          </div>
+        </form>
+
+        <li class="nav-item dropdown hidden-caret">
+          <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
+            <div class="avatar-sm">
+              @if (Auth::guard('admin')->check() && Auth::guard('admin')->user()->image != null)
+                <img src="{{ asset('assets/img/admins/' . Auth::guard('admin')->user()->image) }}" alt="Admin Image" class="avatar-img rounded-circle">
+              @else
+                <img src="{{ asset('assets/img/blank_user.jpg') }}" alt="" class="avatar-img rounded-circle">
+              @endif
+            </div>
+          </a>
+
+          <ul class="dropdown-menu dropdown-user animated fadeIn">
+            <div class="dropdown-user-scroll scrollbar-outer">
+              <li>
+                <div class="user-box">
+                  <div class="avatar-lg">
+                    @if (Auth::guard('admin')->check() && Auth::guard('admin')->user()->image != null)
+                      <img src="{{ asset('assets/img/admins/' . Auth::guard('admin')->user()->image) }}" alt="Admin Image" class="avatar-img rounded-circle">
+                    @else
+                      <img src="{{ asset('assets/img/blank_user.jpg') }}" alt="" class="avatar-img rounded-circle">
+                    @endif
+                  </div>
+
+                  <div class="u-text">
+                    <h4>
+                      @if (Auth::guard('admin')->check())
+                        {{ Auth::guard('admin')->user()->first_name . ' ' . Auth::guard('admin')->user()->last_name }}
+                      @endif
+                    </h4>
+                    <p class="text-muted">
+                      @if (Auth::guard('admin')->check())
+                        {{ Auth::guard('admin')->user()->email }}
+                      @endif
+                    </p>
+                  </div>
+                </div>
+              </li>
+
+              <li>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{{ route('admin.edit_profile') }}">
+                  {{ __('Edit Profile') }}
+                </a>
+
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{{ route('admin.change_password') }}">
+                  {{ __('Change Password') }}
+                </a>
+
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{{ route('admin.logout') }}">
+                  {{ __('Logout') }}
+                </a>
+              </li>
+            </div>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <!-- Navbar Header End -->
+</div>
