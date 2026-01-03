@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', 'FrontEnd\HomeController@index')->name('index');
 Route::get('/courses', 'FrontEnd\Curriculum\CourseController@courses')->name('courses');
 Route::get('/course/{slug}', 'FrontEnd\Curriculum\CourseController@details')->name('course_details');
+Route::post('/course/store-feedback/{id}', 'FrontEnd\Curriculum\CourseController@storeFeedback')->name('course.store_feedback');
 Route::post('/course-enrolment/{id}', 'FrontEnd\Curriculum\EnrolmentController@enrol')->name('course-enrolment');
 Route::get('/login', 'FrontEnd\UserController@login')->name('user.login');
 Route::post('/login', 'FrontEnd\UserController@loginSubmit')->name('user.login_submit');
@@ -30,8 +31,30 @@ Route::get('/blogs', 'FrontEnd\BlogController@index')->name('blogs');
 Route::get('/blog/{slug}', 'FrontEnd\BlogController@details')->name('blog_details');
 Route::get('/faqs', 'FrontEnd\FaqController@index')->name('faqs');
 Route::get('/contact', 'FrontEnd\ContactController@index')->name('contact');
+Route::post('/contact/send-mail', 'FrontEnd\ContactController@sendMail')->name('contact.send_mail');
 Route::get('/page/{slug}', 'FrontEnd\PageController@page')->name('dynamic_page');
+
+// User dashboard and profile routes
+Route::get('/user/dashboard', 'FrontEnd\UserController@redirectToDashboard')->name('user.dashboard');
+Route::get('/user/my-courses', 'FrontEnd\UserController@myCourses')->name('user.my_courses');
+Route::get('/user/purchase-history', 'FrontEnd\UserController@purchaseHistory')->name('user.purchase_history');
+Route::get('/user/edit-profile', 'FrontEnd\UserController@editProfile')->name('user.edit_profile');
+Route::post('/user/update-profile', 'FrontEnd\UserController@updateProfile')->name('user.update_profile');
+Route::get('/user/change-password', 'FrontEnd\UserController@changePassword')->name('user.change_password');
+Route::post('/user/update-password', 'FrontEnd\UserController@updatePassword')->name('user.update_password');
+Route::post('/user/logout', 'FrontEnd\UserController@logoutSubmit')->name('user.logout');
+
+// User course curriculum routes
 Route::get('/user/course-curriculum/{id}', 'FrontEnd\UserController@curriculum')->name('user.my_course.curriculum');
+Route::get('/user/course-curriculum/{id}/certificate', 'FrontEnd\UserController@getCertificate')->name('user.my_course.get_certificate');
+Route::post('/user/course-curriculum/download-file/{id}', 'FrontEnd\UserController@downloadFile')->name('user.my_course.curriculum.download_file');
+Route::post('/user/course-curriculum/check-answer', 'FrontEnd\UserController@checkAns')->name('user.my_course.curriculum.check_ans');
+Route::post('/user/course-curriculum/store-quiz-score', 'FrontEnd\UserController@storeQuizScore')->name('user.my_course.curriculum.store_quiz_score');
+Route::post('/user/course-curriculum/content-completion', 'FrontEnd\UserController@contentCompletion')->name('user.my_course.curriculum.content_completion');
+
+// Password reset route
+Route::post('/reset-password/submit', 'FrontEnd\UserController@resetPasswordSubmit')->name('user.reset_password_submit');
+
 Route::get('/service-unavailable', function () {
   return view('errors.503');
 })->name('service_unavailable');
@@ -88,7 +111,36 @@ Route::post('/admin/courses/{id}/update-status', 'BackEnd\Curriculum\CourseContr
 Route::post('/admin/courses/{id}/update-featured', 'BackEnd\Curriculum\CourseController@updateFeatured')->name('admin.course_management.course.update_featured');
 Route::get('/admin/courses/{id}/modules/{language}', 'BackEnd\Curriculum\ModuleController@index')->name('admin.course_management.course.modules');
 Route::post('/admin/courses/{id}/modules/bulk-delete', 'BackEnd\Curriculum\ModuleController@bulkDestroy')->name('admin.course_management.course.bulk_delete_module');
+
+// Lesson content routes
+Route::get('/admin/lesson-contents/{id}', 'BackEnd\Curriculum\LessonContentController@contents')->name('admin.course_management.lesson.contents');
+Route::post('/admin/lesson-contents/upload-video', 'BackEnd\Curriculum\LessonContentController@uploadVideo')->name('admin.course_management.lesson.upload_video');
+Route::post('/admin/lesson-contents/remove-video', 'BackEnd\Curriculum\LessonContentController@removeVideo')->name('admin.course_management.lesson.remove_video');
+Route::post('/admin/lesson-contents/{id}/store-video', 'BackEnd\Curriculum\LessonContentController@storeVideo')->name('admin.course_management.lesson.store_video');
+Route::post('/admin/lesson-contents/upload-file', 'BackEnd\Curriculum\LessonContentController@uploadFile')->name('admin.course_management.lesson.upload_file');
+Route::post('/admin/lesson-contents/remove-file', 'BackEnd\Curriculum\LessonContentController@removeFile')->name('admin.course_management.lesson.remove_file');
+Route::post('/admin/lesson-contents/{id}/store-file', 'BackEnd\Curriculum\LessonContentController@storeFile')->name('admin.course_management.lesson.store_file');
+Route::get('/admin/lesson-contents/download/{id}', 'BackEnd\Curriculum\LessonContentController@downloadFile')->name('admin.course_management.lesson.download_file');
+Route::post('/admin/lesson-contents/{id}/store-text', 'BackEnd\Curriculum\LessonContentController@storeText')->name('admin.course_management.lesson.store_text');
+Route::post('/admin/lesson-contents/update-text', 'BackEnd\Curriculum\LessonContentController@updateText')->name('admin.course_management.lesson.update_text');
+Route::post('/admin/lesson-contents/{id}/store-code', 'BackEnd\Curriculum\LessonContentController@storeCode')->name('admin.course_management.lesson.store_code');
+Route::post('/admin/lesson-contents/update-code', 'BackEnd\Curriculum\LessonContentController@updateCode')->name('admin.course_management.lesson.update_code');
+Route::delete('/admin/lesson-contents/{id}', 'BackEnd\Curriculum\LessonContentController@destroyContent')->name('admin.course_management.lesson.destroy_content');
+Route::post('/admin/lesson-contents/{id}/delete', 'BackEnd\Curriculum\LessonContentController@destroyContent')->name('admin.course_management.lesson.delete_content');
+Route::post('/admin/lesson-contents/sort', 'BackEnd\Curriculum\LessonContentController@sort')->name('admin.course_management.lesson.sort_contents');
+
+// Lesson quiz routes
+Route::get('/admin/lesson-quiz/{id}', 'BackEnd\Curriculum\LessonQuizController@index')->name('admin.course_management.lesson.quiz');
+Route::get('/admin/lesson-quiz/{id}/manage', 'BackEnd\Curriculum\LessonQuizController@index')->name('admin.course_management.lesson.manage_quiz');
+Route::get('/admin/lesson-quiz/{id}/create', 'BackEnd\Curriculum\LessonQuizController@create')->name('admin.course_management.lesson.create_quiz');
+Route::post('/admin/lesson-quiz/{id}/store', 'BackEnd\Curriculum\LessonQuizController@store')->name('admin.course_management.lesson.store_quiz');
+Route::get('/admin/lesson-quiz/{lessonId}/{quizId}/edit', 'BackEnd\Curriculum\LessonQuizController@edit')->name('admin.course_management.lesson.edit_quiz');
+Route::post('/admin/lesson-quiz/update/{id}', 'BackEnd\Curriculum\LessonQuizController@update')->name('admin.course_management.lesson.update_quiz');
+Route::delete('/admin/lesson-quiz/{id}', 'BackEnd\Curriculum\LessonQuizController@destroy')->name('admin.course_management.lesson.delete_quiz');
+Route::get('/admin/lesson-quiz/answer/{id}', 'BackEnd\Curriculum\LessonQuizController@getAns')->name('admin.course_management.lesson.get_quiz_answer');
+
 Route::get('/admin/courses/{id}/faqs/{language}', 'BackEnd\Curriculum\CourseFaqController@index')->name('admin.course_management.course.faqs');
+
 Route::post('/admin/courses/{id}/faqs/bulk-delete', 'BackEnd\Curriculum\CourseFaqController@bulkDestroy')->name('admin.course_management.course.bulk_delete_faq');
 Route::get('/admin/courses/{id}/thanks-page', 'BackEnd\Curriculum\CourseController@thanksPage')->name('admin.course_management.course.thanks_page');
 Route::get('/admin/courses/{id}/certificate-settings', 'BackEnd\Curriculum\CourseController@certificateSettings')->name('admin.course_management.course.certificate_settings');
