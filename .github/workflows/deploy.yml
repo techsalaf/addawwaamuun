@@ -33,14 +33,21 @@ jobs:
           php artisan view:clear
 
       - name: Deploy to Hostinger via SFTP
-        uses: pressidium/lftp-mirror-action@v1
+        uses: Dylan700/sftp-upload-action@v1.1.4
         with:
-          host: ${{ secrets.HOST }}
-          user: ${{ secrets.USERNAME }}
-          pass: ${{ secrets.PASSWORD }}
+          server: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
           port: 22
-          remoteDir: ${{ secrets.REMOTE_PATH }}
-          localDir: './'
-          reverse: true
-          options: '--verbose --use-cache --exclude .git/ --exclude .github/ --exclude node_modules/ --exclude tests/ --exclude storage/logs/ --exclude .env'
+          uploads: |
+            ./: ${{ secrets.REMOTE_PATH }}/
+          delete: false
+          exclude: |
+            .git/**
+            .github/**
+            node_modules/**
+            tests/**
+            storage/logs/**
+            .env
+            vendor/**/.git
 
