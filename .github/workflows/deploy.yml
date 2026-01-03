@@ -32,19 +32,23 @@ jobs:
           php artisan route:clear
           php artisan view:clear
 
-      - name: Upload files via SFTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      - name: Deploy to Hostinger via SFTP
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
         with:
           server: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-          server-dir: ${{ secrets.REMOTE_PATH }}/
+          port: 22
+          local_path: './*'
+          remote_path: ${{ secrets.REMOTE_PATH }}
+          sftp_only: true
+          args: '-o ConnectTimeout=5'
           exclude: |
-            **/.git*
-            **/.github*
-            **/node_modules/**
-            **/tests/**
-            **/storage/logs/**
-            **/.env
-            **/vendor/**/.git
+            .git*
+            .github*
+            node_modules/
+            tests/
+            storage/logs/
+            .env
+            vendor/**/.git
 
