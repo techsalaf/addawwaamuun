@@ -32,16 +32,14 @@ jobs:
           php artisan route:clear
           php artisan view:clear
 
-      - name: Deploy to Hostinger via SCP
-        uses: appleboy/scp-action@v0.1.7
+      - name: Deploy to Hostinger via rsync
+        uses: burnett01/rsync-deployments@7.0.1
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          port: 22
-          source: "./*"
-          target: ${{ secrets.REMOTE_PATH }}
-          strip_components: 0
-          rm: false
-          overwrite: true
+          switches: -avzr --delete --exclude='.git' --exclude='.github' --exclude='node_modules' --exclude='tests' --exclude='storage/logs' --exclude='.env'
+          path: ./
+          remote_path: ${{ secrets.REMOTE_PATH }}
+          remote_host: ${{ secrets.HOST }}
+          remote_user: ${{ secrets.USERNAME }}
+          remote_password: ${{ secrets.PASSWORD }}
+          remote_port: 22
 
