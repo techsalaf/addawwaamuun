@@ -18,6 +18,16 @@ Route::get('/courses', 'FrontEnd\Curriculum\CourseController@courses')->name('co
 Route::get('/course/{slug}', 'FrontEnd\Curriculum\CourseController@details')->name('course_details');
 Route::post('/course/store-feedback/{id}', 'FrontEnd\Curriculum\CourseController@storeFeedback')->name('course.store_feedback');
 Route::post('/course-enrolment/{id}', 'FrontEnd\Curriculum\EnrolmentController@enrol')->name('course-enrolment');
+Route::get('/course-enrolment/complete/{id}/{via?}', 'FrontEnd\Curriculum\EnrolmentController@complete')->name('course_enrolment.complete');
+Route::get('/course-enrolment/cancel/{id}', 'FrontEnd\Curriculum\EnrolmentController@cancel')->name('course_enrolment.cancel');
+Route::get('/course-enrolment/paypal/notify', 'FrontEnd\PaymentGateway\PayPalController@notify')->name('course_enrolment.paypal.notify');
+Route::get('/course-enrolment/instamojo/notify', 'FrontEnd\PaymentGateway\InstamojoController@notify')->name('course_enrolment.instamojo.notify');
+Route::get('/course-enrolment/paystack/notify', 'FrontEnd\PaymentGateway\PaystackController@notify')->name('course_enrolment.paystack.notify');
+Route::get('/course-enrolment/flutterwave/notify', 'FrontEnd\PaymentGateway\FlutterwaveController@notify')->name('course_enrolment.flutterwave.notify');
+Route::post('/course-enrolment/razorpay/notify', 'FrontEnd\PaymentGateway\RazorpayController@notify')->name('course_enrolment.razorpay.notify');
+Route::post('/course-enrolment/mercadopago/notify', 'FrontEnd\PaymentGateway\MercadoPagoController@notify')->name('course_enrolment.mercadopago.notify');
+Route::get('/course-enrolment/mollie/notify', 'FrontEnd\PaymentGateway\MollieController@notify')->name('course_enrolment.mollie.notify');
+Route::post('/course-enrolment/paytm/notify', 'FrontEnd\PaymentGateway\PaytmController@notify')->name('course_enrolment.paytm.notify');
 Route::get('/login', 'FrontEnd\UserController@login')->name('user.login');
 Route::post('/login', 'FrontEnd\UserController@loginSubmit')->name('user.login_submit');
 Route::get('/forget-password', 'FrontEnd\UserController@forgetPassword')->name('user.forget_password');
