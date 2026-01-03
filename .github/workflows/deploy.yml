@@ -42,7 +42,7 @@ jobs:
           uploads: |
             ./: ${{ secrets.REMOTE_PATH }}/
           delete: false
-          exclude: |
+          ignore: |
             .git/**
             .github/**
             node_modules/**
