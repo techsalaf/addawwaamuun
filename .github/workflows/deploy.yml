@@ -32,22 +32,16 @@ jobs:
           php artisan route:clear
           php artisan view:clear
 
-      - name: Deploy to Hostinger via SFTP
-        uses: Dylan700/sftp-upload-action@v1.1.4
+      - name: Deploy to Hostinger via SCP
+        uses: appleboy/scp-action@v0.1.7
         with:
-          server: ${{ secrets.HOST }}
+          host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           port: 22
-          uploads: |
-            ./: ${{ secrets.REMOTE_PATH }}/
-          delete: false
-          ignore: |
-            .git/**
-            .github/**
-            node_modules/**
-            tests/**
-            storage/logs/**
-            .env
-            vendor/**/.git
+          source: "./*"
+          target: ${{ secrets.REMOTE_PATH }}
+          strip_components: 0
+          rm: false
+          overwrite: true
 
